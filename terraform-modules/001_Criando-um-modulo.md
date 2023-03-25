@@ -12,7 +12,7 @@ git reset -- terraform-modules/001-materiais/.terraform
 git reset -- terraform-modules/001-materiais/.terraform/*
 git reset -- terraform-modules/001-materiais/terraform.tfstate
 git reset -- terraform-modules/001-materiais/terraform.tfstate.backup
-git commit -m "Projeto - eks-via-terraform-github-actions"
+git commit -m "Terraform Modules - 001 Criando um módulo."
 eval $(ssh-agent -s)
 ssh-add /home/fernando/.ssh/chave-debian10-github
 git push
@@ -165,3 +165,144 @@ Apply complete! Resources: 4 added, 0 changed, 0 destroyed.
 fernando@debian10x64:~/cursos/terraform/devops-pro-terraform/terraform-modules/001-materiais$
 
 ~~~~
+
+
+
+- Gerou os 2 arquivos
+devops-pro-terraform/terraform-modules/001-materiais/arquivo.txt
+devops-pro-terraform/terraform-modules/001-materiais/outro_arquivo.txt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Modularizando
+
+- Primeiro vamos destruir a estrutura que criamos antes.
+
+~~~~bash
+
+fernando@debian10x64:~/cursos/terraform/devops-pro-terraform/terraform-modules/001-materiais$ terraform destroy -auto-approve
+random_pet.pet02: Refreshing state... [id=relative-bengal]
+random_pet.pet01: Refreshing state... [id=sterling-serval]
+local_file.arquivo: Refreshing state... [id=925813f181cb3610a0d6de0636852379dec64f52]
+local_file.outro_arquivo: Refreshing state... [id=10bf7381f9437662807187e63296b50af4485a6e]
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+  - destroy
+
+Terraform will perform the following actions:
+
+  # local_file.arquivo will be destroyed
+  - resource "local_file" "arquivo" {
+      - content              = "sterling-serval" -> null
+      - content_base64sha256 = "mC9nOB22xOJGBAwQSbxZA/Q2EiiV8rrEkjM+ES5eRCo=" -> null
+      - content_base64sha512 = "z3Onqmf0zWNcxxhoSbvRCAnpxm8es++EqOJWkHfSaptXteZUq0M6a/2I96poMc+SZgjTB6Qb7v5TVk1GXPWrxw==" -> null
+      - content_md5          = "6bf9679f284bdcb09fe114edb4ac3795" -> null
+      - content_sha1         = "925813f181cb3610a0d6de0636852379dec64f52" -> null
+      - content_sha256       = "982f67381db6c4e246040c1049bc5903f436122895f2bac492333e112e5e442a" -> null
+      - content_sha512       = "cf73a7aa67f4cd635cc7186849bbd10809e9c66f1eb3ef84a8e2569077d26a9b57b5e654ab433a6bfd88f7aa6831cf926608d307a41beefe53564d465cf5abc7" -> null
+      - directory_permission = "0777" -> null
+      - file_permission      = "0777" -> null
+      - filename             = "arquivo.txt" -> null
+      - id                   = "925813f181cb3610a0d6de0636852379dec64f52" -> null
+    }
+
+  # local_file.outro_arquivo will be destroyed
+  - resource "local_file" "outro_arquivo" {
+      - content              = "relative-bengal" -> null
+      - content_base64sha256 = "V8tQxYNJ0aGwZkH9TWVsThPvXn8MmDEHCwabrPRlDeo=" -> null
+      - content_base64sha512 = "hkzPITQlq9BtKhqMuGKbWw+0Io0s2/gPsjQXoD3Pha52kQPfz0IA3+Y6EZJRBlROZscvEnFIleWjryPr/JMR/A==" -> null
+      - content_md5          = "f1e42c9fb9805c7ed8c9b90f5b79bde1" -> null
+      - content_sha1         = "10bf7381f9437662807187e63296b50af4485a6e" -> null
+      - content_sha256       = "57cb50c58349d1a1b06641fd4d656c4e13ef5e7f0c9831070b069bacf4650dea" -> null
+      - content_sha512       = "864ccf213425abd06d2a1a8cb8629b5b0fb4228d2cdbf80fb23417a03dcf85ae769103dfcf4200dfe63a11925106544e66c72f12714895e5a3af23ebfc9311fc" -> null
+      - directory_permission = "0777" -> null
+      - file_permission      = "0777" -> null
+      - filename             = "outro_arquivo.txt" -> null
+      - id                   = "10bf7381f9437662807187e63296b50af4485a6e" -> null
+    }
+
+  # random_pet.pet01 will be destroyed
+  - resource "random_pet" "pet01" {
+      - id        = "sterling-serval" -> null
+      - length    = 2 -> null
+      - separator = "-" -> null
+    }
+
+  # random_pet.pet02 will be destroyed
+  - resource "random_pet" "pet02" {
+      - id        = "relative-bengal" -> null
+      - length    = 2 -> null
+      - separator = "-" -> null
+    }
+
+Plan: 0 to add, 0 to change, 4 to destroy.
+local_file.outro_arquivo: Destroying... [id=10bf7381f9437662807187e63296b50af4485a6e]
+local_file.arquivo: Destroying... [id=925813f181cb3610a0d6de0636852379dec64f52]
+local_file.arquivo: Destruction complete after 0s
+local_file.outro_arquivo: Destruction complete after 0s
+random_pet.pet02: Destroying... [id=relative-bengal]
+random_pet.pet01: Destroying... [id=sterling-serval]
+random_pet.pet02: Destruction complete after 0s
+random_pet.pet01: Destruction complete after 0s
+
+Destroy complete! Resources: 4 destroyed.
+fernando@debian10x64:~/cursos/terraform/devops-pro-terraform/terraform-modules/001-materiais$
+
+~~~~
+
+
+
+
+
+
+
+- Criar um diretório chamado "modules" e uma pasta chamada "pets" dentro desta pasta:
+
+~~~~bash
+fernando@debian10x64:~/cursos/terraform/devops-pro-terraform/terraform-modules/001-materiais$ ls
+main.tf  terraform.tfstate  terraform.tfstate.backup
+fernando@debian10x64:~/cursos/terraform/devops-pro-terraform/terraform-modules/001-materiais$ mkdir modules
+fernando@debian10x64:~/cursos/terraform/devops-pro-terraform/terraform-modules/001-materiais$ ls
+main.tf  modules  terraform.tfstate  terraform.tfstate.backup
+fernando@debian10x64:~/cursos/terraform/devops-pro-terraform/terraform-modules/001-materiais$ ls -lhasp
+total 32K
+4.0K drwxr-xr-x 4 fernando fernando 4.0K Mar 24 22:28 ./
+4.0K drwxr-xr-x 3 fernando fernando 4.0K Mar 24 22:05 ../
+4.0K -rw-r--r-- 1 fernando fernando  275 Mar 24 22:06 main.tf
+4.0K drwxr-xr-x 2 fernando fernando 4.0K Mar 24 22:28 modules/
+4.0K drwxr-xr-x 3 fernando fernando 4.0K Mar 24 22:10 .terraform/
+4.0K -rw-r--r-- 1 fernando fernando 2.2K Mar 24 22:10 .terraform.lock.hcl
+4.0K -rw-r--r-- 1 fernando fernando  156 Mar 24 22:22 terraform.tfstate
+4.0K -rw-r--r-- 1 fernando fernando 3.7K Mar 24 22:22 terraform.tfstate.backup
+fernando@debian10x64:~/cursos/terraform/devops-pro-terraform/terraform-modules/001-materiais$
+fernando@debian10x64:~/cursos/terraform/devops-pro-terraform/terraform-modules/001-materiais$ ls -lhasp modules/
+total 12K
+4.0K drwxr-xr-x 3 fernando fernando 4.0K Mar 24 22:44 ./
+4.0K drwxr-xr-x 4 fernando fernando 4.0K Mar 24 22:28 ../
+4.0K drwxr-xr-x 2 fernando fernando 4.0K Mar 24 22:44 pets/
+fernando@debian10x64:~/cursos/terraform/devops-pro-terraform/terraform-modules/001-materiais$
+
+~~~~
+
+
+- Criado o arquivo main.tf dentro da pasta "pets"
+devops-pro-terraform/terraform-modules/001-materiais/modules/pets/main.tf
+
+- Este módulo vai ser um módulo filho.
+
+
+- Na raíz desta pasta, criar um novo main.tf
+nele vamos declarar um bloco chamado pets
+este arquivo main.tf na raíz é o "Root Module"
+
