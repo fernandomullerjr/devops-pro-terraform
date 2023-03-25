@@ -306,3 +306,156 @@ devops-pro-terraform/terraform-modules/001-materiais/modules/pets/main.tf
 nele vamos declarar um bloco chamado pets
 este arquivo main.tf na raíz é o "Root Module"
 
+
+
+
+
+
+
+
+
+
+
+
+# Calling a Child Module
+
+<https://developer.hashicorp.com/terraform/language/modules/syntax>
+
+To call a module means to include the contents of that module into the configuration with specific values for its input variables. Modules are called from within other modules using module blocks:
+
+module "servers" {
+  source = "./app-cluster"
+
+  servers = 5
+}
+
+
+
+
+
+
+- Chamando o módulo filho, a partir do Root Module na raíz da pasta:
+
+devops-pro-terraform/terraform-modules/001-materiais/main.tf
+
+~~~~h
+module "pets" {
+  source = "./modules/pets"
+}
+~~~~
+
+
+
+
+- É necessário rodar o terraform init novamente:
+
+~~~~bash
+
+fernando@debian10x64:~/cursos/terraform/devops-pro-terraform/terraform-modules/001-materiais$ terraform plan
+╷
+│ Error: Module not installed
+│
+│   on main.tf line 1:
+│    1: module "pets" {
+│
+│ This module is not yet installed. Run "terraform init" to install all modules required by this configuration.
+╵
+fernando@debian10x64:~/cursos/terraform/devops-pro-terraform/terraform-modules/001-materiais$ terraform init
+Initializing modules...
+- pets in modules/pets
+
+Initializing the backend...
+
+Initializing provider plugins...
+- Reusing previous version of hashicorp/local from the dependency lock file
+- Reusing previous version of hashicorp/random from the dependency lock file
+- Using previously-installed hashicorp/local v2.4.0
+- Using previously-installed hashicorp/random v3.4.3
+
+Terraform has been successfully initialized!
+
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.
+fernando@debian10x64:~/cursos/terraform/devops-pro-terraform/terraform-modules/001-materiais$
+
+~~~~
+
+
+
+
+
+- Então é efetuado novo apply.
+- O resultado é o mesmo, só que de uma forma mais simple, usando o módulo:
+
+~~~~bash
+
+fernando@debian10x64:~/cursos/terraform/devops-pro-terraform/terraform-modules/001-materiais$ terraform apply -auto-approve
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # module.pets.local_file.arquivo will be created
+  + resource "local_file" "arquivo" {
+      + content              = (known after apply)
+      + content_base64sha256 = (known after apply)
+      + content_base64sha512 = (known after apply)
+      + content_md5          = (known after apply)
+      + content_sha1         = (known after apply)
+      + content_sha256       = (known after apply)
+      + content_sha512       = (known after apply)
+      + directory_permission = "0777"
+      + file_permission      = "0777"
+      + filename             = "arquivo.txt"
+      + id                   = (known after apply)
+    }
+
+  # module.pets.local_file.outro_arquivo will be created
+  + resource "local_file" "outro_arquivo" {
+      + content              = (known after apply)
+      + content_base64sha256 = (known after apply)
+      + content_base64sha512 = (known after apply)
+      + content_md5          = (known after apply)
+      + content_sha1         = (known after apply)
+      + content_sha256       = (known after apply)
+      + content_sha512       = (known after apply)
+      + directory_permission = "0777"
+      + file_permission      = "0777"
+      + filename             = "outro_arquivo.txt"
+      + id                   = (known after apply)
+    }
+
+  # module.pets.random_pet.pet01 will be created
+  + resource "random_pet" "pet01" {
+      + id        = (known after apply)
+      + length    = 2
+      + separator = "-"
+    }
+
+  # module.pets.random_pet.pet02 will be created
+  + resource "random_pet" "pet02" {
+      + id        = (known after apply)
+      + length    = 2
+      + separator = "-"
+    }
+
+Plan: 4 to add, 0 to change, 0 to destroy.
+module.pets.random_pet.pet01: Creating...
+module.pets.random_pet.pet02: Creating...
+module.pets.random_pet.pet02: Creation complete after 0s [id=massive-griffon]
+module.pets.random_pet.pet01: Creation complete after 0s [id=innocent-whippet]
+module.pets.local_file.outro_arquivo: Creating...
+module.pets.local_file.arquivo: Creating...
+module.pets.local_file.outro_arquivo: Creation complete after 0s [id=04cf82acb73c1475ba61fa8b018d968dda109817]
+module.pets.local_file.arquivo: Creation complete after 0s [id=a133be64471de9e6a21d125b8ba5aaac0f085c1d]
+
+Apply complete! Resources: 4 added, 0 changed, 0 destroyed.
+fernando@debian10x64:~/cursos/terraform/devops-pro-terraform/terraform-modules/001-materiais$
+
+~~~~
