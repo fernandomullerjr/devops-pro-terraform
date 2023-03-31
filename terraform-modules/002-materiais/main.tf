@@ -1,5 +1,5 @@
 module "pets" {
   source          = "./modules/pets"
-  prefixo_arquivo = "teste-arquivo-${count.index}"
-  count = 4
+  prefixo_arquivo = "teste-arquivo-${each.key}"
+  for_each = ["pre01", "pre02", "pre03", "pre04"]
 }

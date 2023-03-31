@@ -224,3 +224,10 @@ nome_pet02 = [
 
 ### For-each
 
+- Adaptando o código, mudando de count para for
+
+module "pets" {
+  source          = "./modules/pets"
+  prefixo_arquivo = "teste-arquivo-${count.index}"
+  count = 4
+}
