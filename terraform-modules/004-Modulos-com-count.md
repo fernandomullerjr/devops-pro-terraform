@@ -77,6 +77,42 @@ fernando@debian10x64:~/cursos/terraform/devops-pro-terraform/terraform-modules/0
 
 
 
+## Terraform - Count
+
+https://developer.hashicorp.com/terraform/language/meta-arguments/count
+<https://developer.hashicorp.com/terraform/language/meta-arguments/count>
+
+### Basic Syntax
+
+count is a meta-argument defined by the Terraform language. It can be used with modules and with every resource type.
+
+The count meta-argument accepts a whole number, and creates that many instances of the resource or module. Each instance has a distinct infrastructure object associated with it, and each is separately created, updated, or destroyed when the configuration is applied.
+
+~~~~h
+resource "aws_instance" "server" {
+  count = 4 # create four similar EC2 instances
+
+  ami           = "ami-a1b2c3d4"
+  instance_type = "t2.micro"
+
+  tags = {
+    Name = "Server ${count.index}"
+  }
+}
+~~~~
+
+### The count Object
+
+In blocks where count is set, an additional count object is available in expressions, so you can modify the configuration of each instance. This object has one attribute:
+
+    count.index — The distinct index number (starting with 0) corresponding to this instance.
+
+
+
+
+
+
+
 - Ao invés de usar um manifesto assim, para criar vários recursos:
 
 ~~~~h
@@ -95,3 +131,96 @@ module "pets02" {
 }
 
 ~~~~
+
+
+
+- E outputs assim:
+
+~~~~h
+output "nome_pet01" {
+  value = module.pets01.nome_01
+}
+
+output "nome_pet02" {
+  value = module.pets02.nome_02
+}
+~~~~
+
+
+
+
+
+
+
+
+
+
+
+- Podemos usar o Count, desta maneira:
+vamos modificar o nome do módulo, deixando apenas "pets" mesmo
+adicionar o count, com a quantidade de vezes que queremos
+usar o count.index para gerar 
+
+~~~~h
+module "pets" {
+  source          = "./modules/pets"
+  prefixo_arquivo = "teste-arquivo-${count.index}"
+  count = 4
+}
+
+~~~~
+
+
+- Já os Outputs, podemos chamar eles usando o asterisco:
+
+~~~~h
+output "nome_pet01" {
+  value = module.pets[*].nome_01
+}
+
+output "nome_pet02" {
+  value = module.pets[*].nome_02
+}
+~~~~
+
+
+
+- Aplicando
+terraform apply -auto-approve
+
+
+- Aplicado:
+
+~~~~bash
+
+module.pets[2].local_file.outro_arquivo: Creation complete after 0s [id=90275ddbbecce2aea76a40a6a400f5f0055f23d2]
+module.pets[0].local_file.outro_arquivo: Creation complete after 0s [id=7baad0cbf3c7571dc70bfc46a48fa5d13b39adbd]
+module.pets[3].local_file.arquivo: Creation complete after 0s [id=10032508bfbd9260b942b9c74021119d56e4839f]
+
+Apply complete! Resources: 16 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+nome_pet01 = [
+  "fluent-crow",
+  "cheerful-airedale",
+  "engaged-emu",
+  "exotic-lark",
+]
+nome_pet02 = [
+  "suited-magpie",
+  "key-glowworm",
+  "humane-filly",
+  "quality-colt",
+]
+~~~~
+
+
+
+
+
+
+
+
+### For-each
+

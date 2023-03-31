@@ -1,13 +1,5 @@
-module "pets01" {
+module "pets" {
   source          = "./modules/pets"
-  prefixo_arquivo = "teste-arquivo-01"
-  
-  depends_on = [
-    module.pets02
-  ]
-}
-
-module "pets02" {
-  source          = "./modules/pets"
-  prefixo_arquivo = "teste-arquivo-02"
+  prefixo_arquivo = "teste-arquivo-${count.index}"
+  count = 4
 }
