@@ -44,11 +44,9 @@ git reset -- 01-eks-cluster-terraform-simples/.terraform/*
 - Criar conta na Digital Ocean
 https://cloud.digitalocean.com/droplets?i=15249b
 
-
 - Gerar token
 https://cloud.digitalocean.com/account/api/tokens?i=15249b
 Fernando-token-Digital-Ocean-01-04-2023
-
 
 
 ### Autenticar o Terraform com a DigitalOcean
@@ -57,3 +55,12 @@ https://jssantos.net/2019/12/terraform-e-digitalocean-infra-as-code-nunca-foi-ta
 
 Antes de começar a fazer qualquer coisa, você precisa de um token de API da DigitalOcean. Você pode gerar um personal accestoken aqui.
 Depois de gerar esse token, guarde-o numa variável de ambiente de nome DIGITALOCEAN_TOKEN ou DIGITALOCEAN_ACCESS_TOKEN.
+
+
+
+
+# PENDENTE
+- Ver melhor maneira de usar o Token da DO no Terraform.
+- Variáveis do TF Cloud?
+- Github?
+- 
