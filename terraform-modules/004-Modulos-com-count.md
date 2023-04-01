@@ -224,10 +224,59 @@ nome_pet02 = [
 
 ### For-each
 
-- Adaptando o código, mudando de count para for
+- Adaptando o código, mudando de count para for_each:
 
+~~~~h
 module "pets" {
   source          = "./modules/pets"
-  prefixo_arquivo = "teste-arquivo-${count.index}"
-  count = 4
+  prefixo_arquivo = "teste-arquivo-${each.key}"
+  for_each = ["pre01", "pre02", "pre03", "pre04"]
 }
+~~~~
+
+
+- Outputs:
+
+~~~~h
+output "nome_pet01" {
+  value = module.pets[*]
+}
+
+output "nome_pet02" {
+  value = module.pets[*]
+}
+~~~~
+
+
+
+- Assim deu erro:
+
+~~~~bash
+fernando@debian10x64:~/cursos/terraform/devops-pro-terraform/terraform-modules/002-materiais$ terraform plan
+╷
+│ Error: Invalid for_each argument
+│
+│   on main.tf line 4, in module "pets":
+│    4:   for_each = ["pre01", "pre02", "pre03", "pre04"]
+│
+│ The given "for_each" argument value is unsuitable: the "for_each" argument must be a map, or set of strings, and you have provided a value of type tuple.
+╵
+fernando@debian10x64:~/cursos/terraform/devops-pro-terraform/terraform-modules/002-materiais$
+
+~~~~
+
+
+
+
+
+
+- Usando a função toset, para transformar os valores para o tipo set:
+
+~~~~h
+module "pets" {
+  source          = "./modules/pets"
+  prefixo_arquivo = "teste-arquivo-${each.key}"
+  for_each = toset( ["pre01", "pre02", "pre03", "pre04"] )
+}
+
+~~~~
