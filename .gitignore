@@ -1,0 +1,25 @@
+# Arquivos e diretórios Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# Diretórios locais
+.terraform.lock.hcl
+.terraform.tfvars
+
+# Logs e arquivos temporários
+*.log
+*.tfvars.json
+*.tfplan
+
+# Arquivos de credenciais (exemplos, adicione mais conforme necessário)
+*.pem
+*.p12
+*.key
+
+# Diretório que pode conter arquivos sensíveis
+secrets/
+
+# Arquivos específicos do editor (opcional, adicione conforme necessário)
+.vscode/
+.idea/
