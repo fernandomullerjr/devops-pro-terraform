@@ -461,3 +461,5 @@ Note: You didn't use the -out option to save this plan, so Terraform can't guara
 fernando@debian10x64:~/cursos/terraform/devops-pro-terraform/001-Introducao/003-digital-ocean-teste$
 
 ~~~~
+
+
