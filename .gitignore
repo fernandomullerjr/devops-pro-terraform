@@ -6,6 +6,7 @@
 # Diretórios locais
 .terraform.lock.hcl
 .terraform.tfvars
+terraform.tfvars
 
 # Logs e arquivos temporários
 *.log
