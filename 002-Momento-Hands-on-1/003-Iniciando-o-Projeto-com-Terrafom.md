@@ -25,3 +25,4 @@ git status
 
 ## PENDENTE
 - Ver com o Fabricio sobre os links e materiais na parte inferior do video.
+
